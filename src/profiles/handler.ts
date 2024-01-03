@@ -8,31 +8,25 @@ import {
   PostProfileSchema,
   UpdateProfileSchema,
 } from "./schemas";
-import {
-  createProfile,
-  getProfiles,
-  getProfileById,
-  updateProfile,
-} from "./use_cases";
-import { deleteProfile } from "./use_cases/delete_profile";
+import * as repository from "./repository";
 
 const app = new Hono();
 
 app.get("/", async (c) => {
-  const profiles = await getProfiles();
+  const profiles = await repository.getProfiles();
   return c.json(profiles);
 });
 
 app.get("/:id", async (c) => {
   const input = parse(GetProfileByIdSchema, { id: c.req.param("id") });
-  const profile = await getProfileById(input);
+  const profile = await repository.getProfileById(input);
   return c.json(profile);
 });
 
 app.post("/", async (c) => {
   try {
     const input = parse(PostProfileSchema, await c.req.json());
-    const createdProfile = await createProfile(input);
+    const createdProfile = await repository.createProfile(input);
     return c.json(createdProfile);
   } catch (error) {
     if ((error as Error).message === "profile already exist") {
@@ -50,7 +44,7 @@ app.patch("/:id", async (c) => {
       id: c.req.param("id"),
       data: await c.req.json(),
     });
-    const updatedProfile = await updateProfile(input);
+    const updatedProfile = await repository.updateProfile(input);
     return c.json(updatedProfile);
   } catch (error) {
     if ((error as Error).message === "profile does not exist") {
@@ -74,7 +68,7 @@ app.delete("/:id", async (c) => {
     const input = parse(DeleteProfileByIdSchema, {
       id: c.req.param("id"),
     });
-    const deletedProfile = await deleteProfile(input);
+    const deletedProfile = await repository.deleteProfile(input);
     return c.json(deletedProfile);
   } catch (error) {
     if ((error as Error).message === "profile does not exist") {
@@ -91,7 +85,6 @@ app.delete("/:id", async (c) => {
 
     throw error;
   }
-  return c.text(`deleted profile ${c.req.param("id")}`);
 });
 
 export default app;
