@@ -1,8 +1,4 @@
-import { object, string, email, minLength } from "valibot";
-
-export const GetProfileByIdSchema = object({
-  id: string(),
-});
+import { object, string, email } from "valibot";
 
 export const PostProfileSchema = object({
   userId: string(),
@@ -18,8 +14,4 @@ export const UpdateProfileSchema = object({
     email: string([email()]),
     imageUrl: string(),
   }),
-});
-
-export const DeleteProfileByIdSchema = object({
-  id: string(),
 });

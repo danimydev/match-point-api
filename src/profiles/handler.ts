@@ -3,8 +3,6 @@ import { HTTPException } from "hono/http-exception";
 import { ValiError, parse } from "valibot";
 
 import {
-  DeleteProfileByIdSchema,
-  GetProfileByIdSchema,
   PostProfileSchema,
   UpdateProfileSchema,
 } from "./schemas";
@@ -18,8 +16,9 @@ app.get("/", async (c) => {
 });
 
 app.get("/:id", async (c) => {
-  const input = parse(GetProfileByIdSchema, { id: c.req.param("id") });
-  const profile = await repository.getProfileById(input);
+  const profile = await repository.getProfileById({
+    id: c.req.param("id"),
+  });
   return c.json(profile);
 });
 
@@ -52,23 +51,20 @@ app.patch("/:id", async (c) => {
         message: (error as Error).message,
       });
     }
-
     if ((error as ValiError).issues.length) {
       throw new HTTPException(400, {
         message: "invalid input",
       });
     }
-
     throw error;
   }
 });
 
 app.delete("/:id", async (c) => {
   try {
-    const input = parse(DeleteProfileByIdSchema, {
+    const deletedProfile = await repository.deleteProfile({
       id: c.req.param("id"),
     });
-    const deletedProfile = await repository.deleteProfile(input);
     return c.json(deletedProfile);
   } catch (error) {
     if ((error as Error).message === "profile does not exist") {
@@ -76,13 +72,11 @@ app.delete("/:id", async (c) => {
         message: (error as Error).message,
       });
     }
-
     if ((error as ValiError).issues.length) {
       throw new HTTPException(400, {
         message: "invalid input",
       });
     }
-
     throw error;
   }
 });
