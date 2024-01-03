@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { ValiError, flatten, parse } from "valibot";
+import { ValiError, parse } from "valibot";
 
 import {
   DeleteProfileByIdSchema,
