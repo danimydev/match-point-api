@@ -1,9 +1,8 @@
 import { Hono } from "hono";
-import { ValiError, parse } from "valibot";
+import { parse } from "valibot";
 
 import { PatchTeamSchema, PostTeamSchema } from "./schemas";
 import * as repository from "./repository";
-import { HTTPException } from "hono/http-exception";
 
 const app = new Hono();
 
@@ -18,37 +17,19 @@ app.get("/:id", async (c) => {
 });
 
 app.post("/", async (c) => {
-  try {
-    const input = parse(PostTeamSchema, await c.req.json());
-    const createdTeam = await repository.createTeam(input);
-    return c.json(createdTeam);
-  } catch (error) {
-    if ((error as ValiError).issues) {
-      throw new Error("invalid input");
-    }
-    throw error;
-  }
+  const input = parse(PostTeamSchema, await c.req.json());
+  const createdTeam = await repository.createTeam(input);
+  return c.json(createdTeam);
+
 });
 
 app.patch("/:id", async (c) => {
-  try {
-    const input = parse(PatchTeamSchema, {
-      id: c.req.param("id"),
-      data: await c.req.json(),
-    });
-    const updatedTeam = await repository.updateTeam(input);
-    return c.json(updatedTeam);
-  } catch (error) {
-    if ((error as Error).message === "") {
-      throw new HTTPException(400, {
-        message: (error as Error).message,
-      });
-    }
-    if ((error as ValiError).issues) {
-      throw new Error("invalid input");
-    }
-    throw error;
-  }
+  const input = parse(PatchTeamSchema, {
+    id: c.req.param("id"),
+    data: await c.req.json(),
+  });
+  const updatedTeam = await repository.updateTeam(input);
+  return c.json(updatedTeam);
 });
 
 app.delete("/:id", async (c) => {
