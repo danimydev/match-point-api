@@ -12,15 +12,19 @@ app.get("/", async (c) => {
 });
 
 app.get("/:id", async (c) => {
-  const team = await repository.getTeamById({ id: c.req.param("id") });
+  const team = await repository.getTeam({ id: c.req.param("id") });
   return c.json(team);
+});
+
+app.get("/:id/members", async (c) => {
+  const members = await repository.getTeamMembers({ id: c.req.param("id") });
+  return c.json(members);
 });
 
 app.post("/", async (c) => {
   const input = parse(PostTeamSchema, await c.req.json());
   const createdTeam = await repository.createTeam(input);
   return c.json(createdTeam);
-
 });
 
 app.patch("/:id", async (c) => {
