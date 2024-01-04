@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { parse } from "valibot";
 
-import { PatchTeamSchema, PostTeamSchema } from "./schemas";
+import * as schemas from "./schemas";
 import * as repository from "./repository";
 
 const app = new Hono();
@@ -22,17 +22,17 @@ app.get("/:id/members", async (c) => {
 });
 
 app.post("/", async (c) => {
-  const input = parse(PostTeamSchema, await c.req.json());
+  const input = parse(schemas.CreateTeamSchema, await c.req.json());
   const createdTeam = await repository.createTeam(input);
   return c.json(createdTeam);
 });
 
 app.patch("/:id", async (c) => {
-  const input = parse(PatchTeamSchema, {
+  const input = parse(schemas.UpdateTeamSchema, await c.req.json());
+  const updatedTeam = await repository.updateTeam({
     id: c.req.param("id"),
-    data: await c.req.json(),
+    data: input,
   });
-  const updatedTeam = await repository.updateTeam(input);
   return c.json(updatedTeam);
 });
 
