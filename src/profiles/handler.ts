@@ -35,11 +35,11 @@ app.post("/", async (c) => {
 });
 
 app.patch("/:id", async (c) => {
-  const input = parse(UpdateProfileSchema, {
+  const input = parse(UpdateProfileSchema, await c.req.json());
+  const updatedProfile = await repository.updateProfile({
     id: c.req.param("id"),
-    data: await c.req.json(),
+    data: input,
   });
-  const updatedProfile = await repository.updateProfile(input);
   return c.json(updatedProfile);
 });
 

@@ -8,10 +8,7 @@ export const PostProfileSchema = object({
 });
 
 export const UpdateProfileSchema = object({
-  id: string(),
-  data: object({
-    name: string(),
-    email: string([email()]),
-    imageUrl: string(),
-  }),
+  name: string(),
+  email: string([email()]),
+  imageUrl: string(),
 });
