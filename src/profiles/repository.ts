@@ -30,14 +30,14 @@ export const createProfile = async (input: {
   email: string,
   imageUrl: string,
 }) => {
-  const alreadyExists = await client.profile.findFirst({
+  const profile = await client.profile.findFirst({
     where: {
       userId: input.userId,
     },
   });
 
-  if (alreadyExists) {
-    throw new Error("profile already exist");
+  if (profile) {
+    throw new Error(`profile with userId ${input.userId} already exists`);
   }
 
   return await client.profile.create({
@@ -65,7 +65,7 @@ export const updateProfile = async (input: {
   });
 
   if (!profile) {
-    throw new Error("profile does not exist");
+    throw new Error(`profile ${input.id} not found`);
   }
 
   return await client.profile.update({
@@ -83,14 +83,14 @@ export const updateProfile = async (input: {
 export const deleteProfile = async (input: {
   id: string,
 }) => {
-  const alreadyExists = await client.profile.findFirst({
+  const profile = await client.profile.findFirst({
     where: {
       id: input.id,
     },
   });
 
-  if (!alreadyExists) {
-    throw new Error("profile does not exist");
+  if (!profile) {
+    throw new Error(`profile ${input.id} not found`);
   }
 
   return await client.profile.delete({

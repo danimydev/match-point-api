@@ -1,6 +1,6 @@
 import { object, string, email } from "valibot";
 
-export const PostProfileSchema = object({
+export const CreateProfileSchema = object({
   userId: string(),
   name: string(),
   email: string([email()]),

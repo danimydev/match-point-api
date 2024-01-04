@@ -1,10 +1,7 @@
 import { Hono } from "hono";
 import { parse } from "valibot";
 
-import {
-  PostProfileSchema,
-  UpdateProfileSchema,
-} from "./schemas";
+import * as schemas from "./schemas";
 import * as repository from "./repository";
 
 const app = new Hono();
@@ -29,13 +26,13 @@ app.get("/:id/external", async (c) => {
 });
 
 app.post("/", async (c) => {
-  const input = parse(PostProfileSchema, await c.req.json());
+  const input = parse(schemas.CreateProfileSchema, await c.req.json());
   const createdProfile = await repository.createProfile(input);
   return c.json(createdProfile);
 });
 
 app.patch("/:id", async (c) => {
-  const input = parse(UpdateProfileSchema, await c.req.json());
+  const input = parse(schemas.UpdateProfileSchema, await c.req.json());
   const updatedProfile = await repository.updateProfile({
     id: c.req.param("id"),
     data: input,
