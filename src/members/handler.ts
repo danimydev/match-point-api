@@ -20,7 +20,7 @@ app.get("/:id", async (c) => {
 
 app.post("/", async (c) => {
   const input = parse(schemas.CreateMemberSchema, await c.req.json());
-  const member = repository.createMember(input);
+  const member = await repository.createMember(input);
   return c.json(member);
 });
 
