@@ -21,6 +21,13 @@ app.get("/:id", async (c) => {
   return c.json(profile);
 });
 
+app.get("/:id/external", async (c) => {
+  const profile = await repository.getProfileByUserId({
+    userId: c.req.param("id"),
+  });
+  return c.json(profile);
+});
+
 app.post("/", async (c) => {
   const input = parse(PostProfileSchema, await c.req.json());
   const createdProfile = await repository.createProfile(input);

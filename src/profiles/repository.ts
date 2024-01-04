@@ -14,6 +14,16 @@ export const getProfileById = async (input: {
   });
 }
 
+export const getProfileByUserId = async (input: {
+  userId: string,
+}) => {
+  return await client.profile.findFirst({
+    where: {
+      userId: input.userId,
+    },
+  });
+}
+
 export const createProfile = async (input: {
   userId: string,
   name: string,
