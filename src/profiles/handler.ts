@@ -12,7 +12,7 @@ app.get("/", async (c) => {
 });
 
 app.get("/:id", async (c) => {
-  const profile = await repository.getProfileById({
+  const profile = await repository.getProfile({
     id: c.req.param("id"),
   });
   return c.json(profile);

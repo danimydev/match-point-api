@@ -4,7 +4,7 @@ export const getProfiles = async () => {
   return await client.profile.findMany();
 }
 
-export const getProfileById = async (input: {
+export const getProfile = async (input: {
   id: string,
 }) => {
   return await client.profile.findFirst({

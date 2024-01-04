@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import { parse } from "valibot";
 
+import * as schemas from "./schemas";
 import * as repository from "./repository";
-import { CreateMemberSchema } from "./schemas";
 
 const app = new Hono();
 
@@ -12,19 +12,32 @@ app.get("/", async (c) => {
 });
 
 app.get("/:id", async (c) => {
-  const member = await repository.getMember({ id: c.req.param("id") });
+  const member = await repository.getMember({
+    id: c.req.param("id"),
+  });
   return c.json(member);
 });
 
 app.post("/", async (c) => {
-  const input = parse(CreateMemberSchema, await c.req.json());
+  const input = parse(schemas.CreateMemberSchema, await c.req.json());
   const member = repository.createMember(input);
   return c.json(member);
 });
 
+app.patch("/:id", async (c) => {
+  const input = parse(schemas.UpdateMemberSchema, await c.req.json());
+  const updatedMember = repository.updateMember({
+    id: c.req.param("id"),
+    data: input,
+  });
+  return c.json(updatedMember);
+});
+
 app.delete("/:id", async (c) => {
-  const deleted = await repository.deleteMember({ id: c.req.param("id") });
-  return c.json(deleted);
+  const deletedMember = await repository.deleteMember({
+    id: c.req.param("id"),
+  });
+  return c.json(deletedMember);
 });
 
 export default app;

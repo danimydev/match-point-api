@@ -18,6 +18,17 @@ export const createMember = async (input: {
   profileId: string,
   teamId: string,
 }) => {
+  const member = await client.member.findFirst({
+    where: {
+      teamId: input.teamId,
+      profileId: input.profileId,
+    },
+  });
+
+  if (member) {
+    throw new Error("member already exists");
+  }
+
   const profile = await client.profile.findFirst({
     where: {
       id: input.profileId,
@@ -43,6 +54,32 @@ export const createMember = async (input: {
       profileId: profile.id,
       teamId: team.id,
     }
+  });
+}
+
+export const updateMember = async (input: {
+  id: string,
+  data: {
+    teamId?: string,
+  },
+}) => {
+  const member = await client.member.findFirst({
+    where: {
+      id: input.id,
+    },
+  });
+
+  if (!member) {
+    throw new Error(`member ${input.id} not found`);
+  }
+
+  return await client.member.update({
+    where: {
+      id: input.id,
+    },
+    data: {
+      teamId: input.data.teamId || member.teamId,
+    },
   });
 }
 
