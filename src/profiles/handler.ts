@@ -25,6 +25,13 @@ app.get("/:id/teams", async (c) => {
   return c.json(profileTeams);
 });
 
+app.get("/:id/members", async (c) => {
+  const profileMembers = await repository.getProfileMembers({
+    id: c.req.param("id"),
+  });
+  return c.json(profileMembers);
+});
+
 app.get("/:id/external", async (c) => {
   const profile = await repository.getProfileByUserId({
     userId: c.req.param("id"),

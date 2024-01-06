@@ -34,10 +34,30 @@ export const getProfileTeams = async (input: {
   });
 
   if (!profile) {
-    throw new Error(`profile`)
+    throw new Error(`profile ${input.id} not found`);
   }
 
   return await client.team.findMany({
+    where: {
+      profileId: profile.id,
+    },
+  });
+}
+
+export const getProfileMembers = async (input: {
+  id: string,
+}) => {
+  const profile = await client.profile.findFirst({
+    where: {
+      id: input.id,
+    },
+  });
+
+  if (!profile) {
+    throw new Error(`profile ${input.id} not found`);
+  }
+
+  return await client.member.findMany({
     where: {
       profileId: profile.id,
     },
