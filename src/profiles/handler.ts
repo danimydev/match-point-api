@@ -18,6 +18,13 @@ app.get("/:id", async (c) => {
   return c.json(profile);
 });
 
+app.get("/:id/teams", async (c) => {
+  const profileTeams = await repository.getProfileTeams({
+    id: c.req.param("id"),
+  });
+  return c.json(profileTeams);
+});
+
 app.get("/:id/external", async (c) => {
   const profile = await repository.getProfileByUserId({
     userId: c.req.param("id"),

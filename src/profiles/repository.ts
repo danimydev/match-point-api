@@ -24,6 +24,26 @@ export const getProfileByUserId = async (input: {
   });
 }
 
+export const getProfileTeams = async (input: {
+  id: string,
+}) => {
+  const profile = await client.profile.findFirst({
+    where: {
+      id: input.id,
+    },
+  });
+
+  if (!profile) {
+    throw new Error(`profile`)
+  }
+
+  return await client.team.findMany({
+    where: {
+      profileId: profile.id,
+    },
+  });
+}
+
 export const createProfile = async (input: {
   userId: string,
   name: string,
