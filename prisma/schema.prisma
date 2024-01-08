@@ -56,4 +56,19 @@ model Stadium {
   picture   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Match     Match[]
+}
+
+model Match {
+  id        String   @id @default(uuid())
+  startAt   DateTime @default(now())
+  duration  Int      @default(60)
+  teamAId   String
+  teamBId   String
+  stadiumId String
+  stadium   Stadium  @relation(fields: [stadiumId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([stadiumId])
 }
